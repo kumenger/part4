@@ -1,0 +1,18 @@
+const express=require('express')
+const app=express()
+const cors=require('cors')
+const mongoose=require('mongoose')
+const noteRouter=require('./controller/blogpost')
+const loger=require('./utilities/logger')
+const config=require('./utilities/config')
+const middlware=require('./utilities/middleware')
+
+loger.info('connecting to ',config.MONGO_URI)
+mongoose.connect(config.MONGO_URI).then(()=>{loger.info("connected to mongo db")}).catch((error)=>{loger.error(error)})
+app.use(cors())
+app.use(express.json())
+app.use('/api/blogs',noteRouter)
+app.use(middlware.unknowEndpoint)
+app.use(middlware.errorHandler)
+app.use(middlware.requestLogger)
+module.exports=app
