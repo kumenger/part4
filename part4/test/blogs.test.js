@@ -187,7 +187,6 @@ describe("cheking total blogs and types", () => {
       title: "QUit Smoking disscution board",
       author: "kumenger f beyene",
       url: "https://scary-eyeballs-76816.herokuapp.com/",
-      likes: 100,
     };
     await api
       .post("/api/blogs")
@@ -198,15 +197,26 @@ describe("cheking total blogs and types", () => {
     expect(response.body).toHaveLength(listHelper.intialBlogs.length + 1);
   });
   test("set likes to zero if missing", async () => {
-    const blogsWithMissingLikes = new Blogs({
-      title: "kumenger APi implementation",
-      author: "kumenger",
-      url: "https://shunnarski.github.io/BigO.html",
-    });
+    const blogsWithMissingLikes = new Blogs(listHelper.blogsWithMissingLikes);
 
     const response = await api.post("/api/blogs").send(blogsWithMissingLikes);
-
-    expect(response.body.likes).toBe(0);
+    expect(response.body.likes).toBe(0)
+  });
+  test("chek if  title missing", async () => {
+    const newBlog = new Blogs({
+      likes: 400,
+      author: "me",
+      url: "www.google.com",
+    });
+    await api.post("/api/blogs").send(newBlog).expect(400);
+  });
+  test("check if  url missing", async () => {
+    const newBlog = new Blogs({
+      likes: 400,
+      author: "me",
+      title: "it all about me",
+    });
+    await api.post("/api/blogs").send(newBlog).expect(400);
   });
 });
 afterAll(() => {

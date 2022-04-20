@@ -72,7 +72,7 @@ const intialBlogs = [
 const blogsWithMissingLikes = {
   title: "kumenger APi implementation",
   author: "kumenger",
-  url: "https://shunnarski.github.io/BigO.html",
+  url:"https://shunnarski.github.io/BigO.html",
   
 }
 

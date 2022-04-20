@@ -3,19 +3,24 @@ const Blogs = require("../model/BlogPost");
 const loger = require("../utilities/logger");
 blogsRouter.post("/", async (req, res, next) => {
   const body = req.body;
-  if (!body.title) {
-    return res.status(400).json({ error: "no inputs" });
+
+  if (!body.title || !body.url) {
+    return res
+      .status(400)
+      .json({ error: "title and url required to make new blog" })
+      .end();
   }
+
   const newblog = new Blogs({
     title: body.title,
-    author: body.author,
+    author: body.author || " ",
     url: body.url,
-    likes: body.likes,
+    likes: body.likes || 0,
   });
 
   try {
     const savedNote = await newblog.save();
-    res.json(savedNote);
+    res.status(200).json(savedNote);
   } catch (exp) {
     next(exp);
   }
