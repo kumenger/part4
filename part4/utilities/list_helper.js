@@ -1,3 +1,4 @@
+const User=require('../model/User')
 const dummy = (blogs) => {
   return 1;
 };
@@ -75,11 +76,23 @@ const blogsWithMissingLikes = {
   url:"https://shunnarski.github.io/BigO.html",
   
 }
-
+const checkLengRevoveWhiteSpace=(str)=>{
+  let myregx=/\s/g
+  if(str.replace(myregx,"").length>=3){
+      return true
+  }
+  return false
+}
+const usersIndb=()=>{
+  const users=User.find({})
+  return users.map(user=>user.toJSON())
+}
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
   intialBlogs,
   blogsWithMissingLikes,
+  checkLengRevoveWhiteSpace,
+  usersIndb
 };
