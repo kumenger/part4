@@ -15,6 +15,7 @@ const getTokenForm = (request) => {
 blogsRouter.post("/", async (req, res, next) => {
   const body = req.body;
   const {token}=req
+  console.log(req.user)
   if (!body.title || !body.url) {
     return res
       .status(400)
@@ -23,9 +24,9 @@ blogsRouter.post("/", async (req, res, next) => {
   }
 
   try {
-    //const token = getTokenForm(req);
-    const decodedToken = jwt.verify(token, process.env.SEACRET);
-    const user = await User.findById(decodedToken.id);
+   
+    
+    const user =req.user;
     const newblog = new Blogs({
       title: body.title,
       author: body.author || " ",
@@ -58,12 +59,26 @@ blogsRouter.get("/", async (req, res, next) => {
   // Blogs.find({}).then((blog)=>{res.json(blog)}).catch((error)=>{next(error)})
 });
 blogsRouter.delete("/:id", async (req, res, next) => {
-  try {
-    await Blogs.findByIdAndRemove(req.params.id);
-    res.status(204).end();
-  } catch (e) {
-    next(e);
-  }
+ 
+   const user=req.user
+   const bloguser=await Blogs.findById(req.params.id)
+   if(bloguser.user.toString()===user.id){
+    try {
+    
+   
+      await Blogs.findByIdAndRemove(req.params.id);
+    
+    
+      res.status(204).end();
+    } catch (e) {
+      next(e);
+    }
+   }
+   else{
+    
+     res.status(400).json({error:"invalid user"})
+   }
+ 
 });
 blogsRouter.put("/:id", async (req, res, next) => {
   const likes = req.body.likes;

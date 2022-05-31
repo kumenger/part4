@@ -190,16 +190,31 @@ describe("cheking total blogs and types", () => {
     };
     await api
       .post("/api/blogs")
+      .set({Authorization:"bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hemkiLCJpZCI6IjYyOTAwOWE1ZDc1OTZmOWRhY2JjYjc0OSIsImlhdCI6MTY1Mzk2NjE5NywiZXhwIjoxNjUzOTY5Nzk3fQ.wW5CbHjUmBrj85TE1gLe-xfzxpznbmP7JG9rmc0LNuc"})
       .send(newBlog)
       .expect(200)
       .expect("Content-Type", /application\/json/);
     const response = await api.get("/api/blogs");
     expect(response.body).toHaveLength(listHelper.intialBlogs.length + 1);
   });
+  test("check if new blog add fail if token not sent", async () => {
+    const newBlog = {
+      title: "QUit Smoking disscution board",
+      author: "kumenger f beyene",
+      url: "https://scary-eyeballs-76816.herokuapp.com/",
+    };
+    await api
+      .post("/api/blogs").send(newBlog)
+      .expect(401)
+      .expect("Content-Type", /application\/json/);
+    const response = await api.get("/api/blogs");
+    expect(response.body).toHaveLength(listHelper.intialBlogs.length);
+  })
   test("set likes to zero if missing", async () => {
-    const blogsWithMissingLikes = new Blogs(listHelper.blogsWithMissingLikes);
+    const blogsWithMissingLike = new Blogs(listHelper.blogsWithMissingLikes);
+    const blogsWithMissingLikes={...blogsWithMissingLike,likes:0}
 
-    const response = await api.post("/api/blogs").send(blogsWithMissingLikes);
+    const response = await api.post("/api/blogs").set({Authorization:"bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hemkiLCJpZCI6IjYyOTAwOWE1ZDc1OTZmOWRhY2JjYjc0OSIsImlhdCI6MTY1Mzk2NjE5NywiZXhwIjoxNjUzOTY5Nzk3fQ.wW5CbHjUmBrj85TE1gLe-xfzxpznbmP7JG9rmc0LNuc"}).send(blogsWithMissingLikes);
     expect(response.body.likes).toBe(0)
   });
   test("chek if  title missing", async () => {

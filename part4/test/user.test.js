@@ -7,6 +7,7 @@ describe('test when user creation failed',()=>{
  beforeEach(async()=>{
      User.deleteMany()
  })
+ 
  test('user creation faild when  user is taken',async()=>{
      const newUser={
          username:"man",
